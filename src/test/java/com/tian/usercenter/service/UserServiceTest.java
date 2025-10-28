@@ -1,5 +1,8 @@
 package com.tian.usercenter.service;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import com.tian.usercenter.model.User;
 import org.junit.jupiter.api.Assertions;
@@ -69,5 +72,12 @@ class UserServiceTest {
         reuslt = userService.userRegister(userAccount, userPassword, checkPassword);
         System.out.println(reuslt);
 //        Assertions.assertTrue(reuslt > 0);
+    }
+
+    @Test
+    void testSearchUsersTags(){
+        List<String> tagNameList = Arrays.asList("java", "python");
+        List<User> userList = userService.searchUsersByTags(tagNameList);
+        Assertions.assertNotNull(userList);
     }
 }

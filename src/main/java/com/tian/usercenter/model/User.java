@@ -81,6 +81,11 @@ public class User {
      */
     private Integer userRole;
 
+    /**
+     * 标签
+     */
+    private String tags;
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
