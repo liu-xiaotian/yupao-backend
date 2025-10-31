@@ -10,6 +10,7 @@ import com.tian.usercenter.model.domain.UserLoginRequest;
 import com.tian.usercenter.model.domain.UserRegisterRequest;
 import com.tian.usercenter.service.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -23,7 +24,7 @@ import static com.tian.usercenter.constant.UserConstant.USER_LOGIN_STATE;
 /*用户接口*/
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5173"}, allowCredentials = "true")
 public class UserController {
 
     @Resource
@@ -58,19 +59,13 @@ public class UserController {
         return ResultUtils.success(user);
     }
 
-    @GetMapping("/search")
-    public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request){
-        if (!isAdmin(request)){
+    @GetMapping("/search/tags")
+    public BaseResponse<List<User>> searchUsers(@RequestParam(required = false) List<String> tagNameList){
+        if (CollectionUtils.isEmpty(tagNameList)){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        if (StringUtils.isAnyBlank(username)){
-            queryWrapper.like("username", username);
-        }
-
-        List<User> userList = userService.list(queryWrapper);
-        List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
-        return ResultUtils.success(list);
+        List<User> userList = userService.searchUsersByTags(tagNameList);
+        return ResultUtils.success(userList);
     }
 
     @DeleteMapping("/delete")

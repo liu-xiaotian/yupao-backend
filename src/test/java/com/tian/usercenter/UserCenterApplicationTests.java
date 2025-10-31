@@ -10,10 +10,4 @@ class UserCenterApplicationTests {
     @Test
     void contextLoads() {
     }
-
-    @Test
-    void testDigest(){
-        String newPassword = DigestUtils.md5DigestAsHex(("123" + "tt").getBytes());
-        System.out.println(newPassword);
-    }
 }
