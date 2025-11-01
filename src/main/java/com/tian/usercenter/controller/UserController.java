@@ -1,6 +1,7 @@
 package com.tian.usercenter.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tian.usercenter.common.BaseResponse;
 import com.tian.usercenter.common.ErrorCode;
 import com.tian.usercenter.common.ResultUtils;
@@ -10,6 +11,7 @@ import com.tian.usercenter.model.domain.UserLoginRequest;
 import com.tian.usercenter.model.domain.UserRegisterRequest;
 import com.tian.usercenter.service.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,16 +60,44 @@ public class UserController {
         User user = userService.userLogin(userAccount, userPassword, httpServletRequest);
         return ResultUtils.success(user);
     }
-
+    @GetMapping("/search")
+    public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request){
+        if (!isAdmin(request)){
+            throw new BusinessException(ErrorCode.NO_AUTH);
+        }
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(username)) {
+            queryWrapper.like("username", "%" + username + "%");   // 模糊匹配
+        }
+        List<User> userList = userService.list(queryWrapper);
+        List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
+        return ResultUtils.success(list);
+    }
     @GetMapping("/search/tags")
-    public BaseResponse<List<User>> searchUsers(@RequestParam(required = false) List<String> tagNameList){
+    public BaseResponse<List<User>> searchUserByTags(@RequestParam(required = false) List<String> tagNameList){
         if (CollectionUtils.isEmpty(tagNameList)){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         List<User> userList = userService.searchUsersByTags(tagNameList);
         return ResultUtils.success(userList);
     }
-
+    @GetMapping("/recommend")
+    public BaseResponse<Page<User>> recommendUsers(long pageSize, long pageNum, HttpServletRequest request){
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        Page<User> userList = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        return ResultUtils.success(userList);
+    }
+    @PostMapping("/update")
+    public BaseResponse<Integer> update(@RequestBody User user, HttpServletRequest request){
+        //验证参数是否为空
+        if (user == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        //鉴权
+        User loginUser = userService.getLoginUser(request);
+        int result = userService.updateUser(user, loginUser);
+        return ResultUtils.success(result);
+    }
     @DeleteMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request){
         if (!isAdmin(request)){
