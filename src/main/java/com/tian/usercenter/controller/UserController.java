@@ -10,27 +10,38 @@ import com.tian.usercenter.model.User;
 import com.tian.usercenter.model.domain.UserLoginRequest;
 import com.tian.usercenter.model.domain.UserRegisterRequest;
 import com.tian.usercenter.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.tian.usercenter.constant.UserConstant.ADMIN_ROLE;
 import static com.tian.usercenter.constant.UserConstant.USER_LOGIN_STATE;
+import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 /*用户接口*/
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = {"http://localhost:5173"}, allowCredentials = "true")
+@Slf4j
 public class UserController {
 
     @Resource
     private UserService userService;
+    @Qualifier("redisTemplate")
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest){
@@ -83,8 +94,23 @@ public class UserController {
     }
     @GetMapping("/recommend")
     public BaseResponse<Page<User>> recommendUsers(long pageSize, long pageNum, HttpServletRequest request){
+        User loginUser = userService.getLoginUser(request);
+        String redisKey = String.format("shayu:user:recommend:%s", loginUser.getId());
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        //如有缓存直接读取
+        Page<User> userPage = (Page<User>)  valueOperations.get(redisKey);
+        if (userPage != null){
+            return ResultUtils.success(userPage);
+        }
+
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         Page<User> userList = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        //写缓存 10s 过期
+        try {
+            valueOperations.set(redisKey, userPage, 30000, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            log.error("set redisKey error", e);
+        }
         return ResultUtils.success(userList);
     }
     @PostMapping("/update")
