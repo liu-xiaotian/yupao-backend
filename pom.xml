@@ -14,7 +14,11 @@
         <spring-boot.version>2.6.13</spring-boot.version>
     </properties>
     <dependencies>
-
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.19.1</version>
+        </dependency>
         <!-- easy Excel -->
         <dependency>
             <groupId>com.alibaba</groupId>
