@@ -2,7 +2,7 @@ package com.tian.usercenter.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
-import com.tian.usercenter.model.User;
+import com.tian.usercenter.model.domain.User;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;

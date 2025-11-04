@@ -1,6 +1,6 @@
 package com.tian.usercenter.service;
 
-import com.tian.usercenter.model.User;
+import com.tian.usercenter.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;

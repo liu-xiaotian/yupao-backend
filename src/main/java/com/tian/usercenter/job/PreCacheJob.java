@@ -2,7 +2,7 @@ package com.tian.usercenter.job;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.tian.usercenter.model.User;
+import com.tian.usercenter.model.domain.User;
 import com.tian.usercenter.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;

@@ -6,13 +6,12 @@ import com.tian.usercenter.common.BaseResponse;
 import com.tian.usercenter.common.ErrorCode;
 import com.tian.usercenter.common.ResultUtils;
 import com.tian.usercenter.exception.BusinessException;
-import com.tian.usercenter.model.User;
-import com.tian.usercenter.model.domain.UserLoginRequest;
-import com.tian.usercenter.model.domain.UserRegisterRequest;
+import com.tian.usercenter.model.domain.User;
+import com.tian.usercenter.model.request.UserLoginRequest;
+import com.tian.usercenter.model.request.UserRegisterRequest;
 import com.tian.usercenter.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 
 import static com.tian.usercenter.constant.UserConstant.ADMIN_ROLE;
 import static com.tian.usercenter.constant.UserConstant.USER_LOGIN_STATE;
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 /*用户接口*/
 @RestController

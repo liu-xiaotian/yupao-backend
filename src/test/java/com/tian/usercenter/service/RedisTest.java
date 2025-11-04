@@ -1,6 +1,6 @@
 package com.tian.usercenter.service;
 
-import com.tian.usercenter.model.User;
+import com.tian.usercenter.model.domain.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

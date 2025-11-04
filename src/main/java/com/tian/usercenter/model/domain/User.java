@@ -1,4 +1,4 @@
-package com.tian.usercenter.model;
+package com.tian.usercenter.model.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

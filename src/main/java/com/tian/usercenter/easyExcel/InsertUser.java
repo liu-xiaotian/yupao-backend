@@ -1,7 +1,7 @@
 package com.tian.usercenter.easyExcel;
 
 import com.tian.usercenter.mapper.UserMapper;
-import com.tian.usercenter.model.User;
+import com.tian.usercenter.model.domain.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 

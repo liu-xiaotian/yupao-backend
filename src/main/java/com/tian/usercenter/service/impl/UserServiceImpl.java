@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tian.usercenter.common.ErrorCode;
 import com.tian.usercenter.exception.BusinessException;
-import com.tian.usercenter.model.User;
+import com.tian.usercenter.model.domain.User;
 import com.tian.usercenter.mapper.UserMapper;
 import com.tian.usercenter.service.UserService;
 import lombok.extern.slf4j.Slf4j;

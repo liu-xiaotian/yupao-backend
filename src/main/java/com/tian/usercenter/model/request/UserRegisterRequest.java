@@ -1,4 +1,4 @@
-package com.tian.usercenter.model.domain;
+package com.tian.usercenter.model.request;
 
 import lombok.Data;
 
